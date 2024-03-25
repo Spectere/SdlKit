@@ -14,10 +14,10 @@ public class AppWindow : Window {
 
     private int _drawState;
     private readonly decimal _scale;
-    private readonly Image _lol;
-    private readonly Image _lol2;
-    private readonly Image _lol5;
-    private readonly Image _lol6;
+    private readonly Image _randomPixelsImage;
+    private readonly Image _colorOverlayImage;
+    private readonly Image _paintSurfaceImage;
+    private readonly Image _fontImage;
 
     private readonly List<Gamepad> _gamepads = [];
 
@@ -62,46 +62,46 @@ public class AppWindow : Window {
         //
         _scale = scale;
         
-        _lol = new Image(this, ImageType.Streaming, DemoWidth, DemoHeight);
-        _lol.ZOrder = 0;
-        AddRenderable(_lol);
+        _randomPixelsImage = new Image(this, ImageType.Streaming, DemoWidth, DemoHeight);
+        _randomPixelsImage.ZOrder = 0;
+        AddRenderable(_randomPixelsImage);
 
-        _lol2 = new Image(this, ImageType.Static, DemoWidth / 2, DemoHeight / 2, TextureFiltering.Linear);
-        _lol2.BlendMode = BlendMode.Alpha;
-        _lol2.Destination = new SdlRect(0, 0, DemoWidth, DemoHeight);
-        _lol2.ZOrder = 1;
-        for(var i = 0; i < _lol2.Pixels.ByColor.Length; i++) {
-            _lol2.Pixels.ByColor[i].A = 64;
+        _colorOverlayImage = new Image(this, ImageType.Static, DemoWidth / 2, DemoHeight / 2, TextureFiltering.Linear);
+        _colorOverlayImage.BlendMode = BlendMode.Alpha;
+        _colorOverlayImage.Destination = new SdlRect(0, 0, DemoWidth, DemoHeight);
+        _colorOverlayImage.ZOrder = 1;
+        for(var i = 0; i < _colorOverlayImage.Pixels.ByColor.Length; i++) {
+            _colorOverlayImage.Pixels.ByColor[i].A = 64;
         }
 
-        AddRenderable(_lol2);
+        AddRenderable(_colorOverlayImage);
 
-        var lol3 = new RenderTarget(this, 4, 4, TextureFiltering.Linear);
-        lol3.Destination = new SdlRect(18, 10, 8, 8);
-        lol3.ZOrder = 2;
-        lol3.RotationAngle = 45.0d;
-        AddRenderable(lol3);
+        var diamondTarget = new RenderTarget(this, 4, 4, TextureFiltering.Linear);
+        diamondTarget.Destination = new SdlRect(18, 10, 8, 8);
+        diamondTarget.ZOrder = 2;
+        diamondTarget.RotationAngle = 45.0d;
+        AddRenderable(diamondTarget);
 
-        var lol4 = new Image(this, ImageType.Streaming, 4, 4);
-        lol4.ZOrder = 0;
-        lol3.AddRenderable(lol4);
-        for(var i = 0; i < lol4.Pixels.ByColor.Length; i++) {
-            lol4.Pixels.ByColor[i].R = (byte)_rng.Next(0, 64);
-            lol4.Pixels.ByColor[i].G = (byte)_rng.Next(0, 64);
-            lol4.Pixels.ByColor[i].B = (byte)_rng.Next(0, 64);
+        var diamondImage = new Image(this, ImageType.Streaming, 4, 4);
+        diamondImage.ZOrder = 0;
+        diamondTarget.AddRenderable(diamondImage);
+        for(var i = 0; i < diamondImage.Pixels.ByColor.Length; i++) {
+            diamondImage.Pixels.ByColor[i].R = (byte)_rng.Next(0, 64);
+            diamondImage.Pixels.ByColor[i].G = (byte)_rng.Next(0, 64);
+            diamondImage.Pixels.ByColor[i].B = (byte)_rng.Next(0, 64);
         }
-        lol4.Update(null);
+        diamondImage.Update(null);
 
-        _lol5 = new Image(this, ImageType.Streaming, DemoWidth, DemoHeight);
-        _lol5.ZOrder = 10;
-        _lol5.BlendMode = BlendMode.Alpha;
-        AddRenderable(_lol5);
+        _paintSurfaceImage = new Image(this, ImageType.Streaming, DemoWidth, DemoHeight);
+        _paintSurfaceImage.ZOrder = 10;
+        _paintSurfaceImage.BlendMode = BlendMode.Alpha;
+        AddRenderable(_paintSurfaceImage);
 
-        _lol6 = Image.FromFile(this, "Assets/SpectereFont-8x16.png");
-        _lol6.ZOrder = 100;
-        _lol6.Window = new SdlRect(16, 3, 8, 10);
-        _lol6.Destination = new SdlRect(0, 0, 8, 10);
-        AddRenderable(_lol6);
+        _fontImage = Image.FromFile(this, "Assets/SpectereFont-8x16.png");
+        _fontImage.ZOrder = 100;
+        _fontImage.Window = new SdlRect(16, 3, 8, 10);
+        _fontImage.Destination = new SdlRect(0, 0, 8, 10);
+        AddRenderable(_fontImage);
     }
 
     private bool _upPress;
@@ -242,20 +242,20 @@ public class AppWindow : Window {
         var pixelY = Convert.ToInt32(Math.Floor(e.PointerY / _scale));
 
         if(_drawState == 1) {
-            _lol5.Pixels.ByColor[pixelY * DemoWidth + pixelX].R = 255;
-            _lol5.Pixels.ByColor[pixelY * DemoWidth + pixelX].G = 255;
-            _lol5.Pixels.ByColor[pixelY * DemoWidth + pixelX].B = 255;
-            _lol5.Pixels.ByColor[pixelY * DemoWidth + pixelX].A = 255;
+            _paintSurfaceImage.Pixels.ByColor[pixelY * DemoWidth + pixelX].R = 255;
+            _paintSurfaceImage.Pixels.ByColor[pixelY * DemoWidth + pixelX].G = 255;
+            _paintSurfaceImage.Pixels.ByColor[pixelY * DemoWidth + pixelX].B = 255;
+            _paintSurfaceImage.Pixels.ByColor[pixelY * DemoWidth + pixelX].A = 255;
         } else if(_drawState == 3) {
-            _lol5.Pixels.ByColor[pixelY * DemoWidth + pixelX].R = 0;
-            _lol5.Pixels.ByColor[pixelY * DemoWidth + pixelX].G = 0;
-            _lol5.Pixels.ByColor[pixelY * DemoWidth + pixelX].B = 0;
-            _lol5.Pixels.ByColor[pixelY * DemoWidth + pixelX].A = 255;
+            _paintSurfaceImage.Pixels.ByColor[pixelY * DemoWidth + pixelX].R = 0;
+            _paintSurfaceImage.Pixels.ByColor[pixelY * DemoWidth + pixelX].G = 0;
+            _paintSurfaceImage.Pixels.ByColor[pixelY * DemoWidth + pixelX].B = 0;
+            _paintSurfaceImage.Pixels.ByColor[pixelY * DemoWidth + pixelX].A = 255;
         } else {
-            _lol5.Pixels.ByColor[pixelY * DemoWidth + pixelX].A = 0;
+            _paintSurfaceImage.Pixels.ByColor[pixelY * DemoWidth + pixelX].A = 0;
         }
         
-        _lol5.Update(new SdlRect(pixelX, pixelY, 1, 1));
+        _paintSurfaceImage.Update(new SdlRect(pixelX, pixelY, 1, 1));
     }
 
     private void MouseWheelMoved(object? sender, MouseWheelEventArgs e) {
@@ -281,24 +281,28 @@ public class AppWindow : Window {
     }
 
     //private int _counter;
-    private int lol6X = 0;
-    private int lol6Y = 0;
+    private int _playerX = 0;
+    private int _playerY = 0;
 
-    private void ClampLol6() {
-        if(lol6X < 0) {
-            lol6X = 0;
+    private void UpdateTitle() {
+        Title = $"SDLKit Demo - ({_playerX}, {_playerY})";
+    }
+
+    private void ClampPlayerSpriteLocation() {
+        if(_playerX < 0) {
+            _playerX = 0;
         }
 
-        if(lol6X > DemoWidth - 8) {
-            lol6X = DemoWidth - 8;
+        if(_playerX > DemoWidth - 8) {
+            _playerX = DemoWidth - 8;
         }
 
-        if(lol6Y < 0) {
-            lol6Y = 0;
+        if(_playerY < 0) {
+            _playerY = 0;
         }
 
-        if(lol6Y > DemoHeight - 10) {
-            lol6Y = DemoHeight - 10;
+        if(_playerY > DemoHeight - 10) {
+            _playerY = DemoHeight - 10;
         }
     }
     
@@ -306,23 +310,23 @@ public class AppWindow : Window {
         //Console.WriteLine($"Game  - {_counter++}");
         ProcessEvents();
 
-        if(_lol6.Destination is not null) {
+        if(_fontImage.Destination is not null) {
             if(_upPress) {
-                lol6Y -= 1;
+                _playerY -= 1;
             } else if(_downPress) {
-                lol6Y += 1;
+                _playerY += 1;
             }
             
             if(_leftPress) {
-                lol6X -= 1;
+                _playerX -= 1;
             } else if(_rightPress) {
-                lol6X += 1;
+                _playerX += 1;
             }
         }
 
-        ClampLol6();
-        _lol6.Destination = new SdlRect(lol6X, lol6Y, 8, 10);
-
+        ClampPlayerSpriteLocation();
+        _fontImage.Destination = new SdlRect(_playerX, _playerY, 8, 10);
+        UpdateTitle();
         
         // Let's get ready to rumble!!
         if(_lowFreqRumble == 0 && _highFreqRumble == 0) return;
@@ -331,51 +335,51 @@ public class AppWindow : Window {
         }
     }
 
-    private int _i;
-    private int _j = -NumPixels / 4;
-    private int _j2;
+    private int _pixelIdx;
+    private int _overlayIdx = -NumPixels / 4;
+    private int _overlayStage;
     private const int NumPixels = DemoWidth * DemoHeight;
     private readonly Random _rng = new();
     protected override void VideoPreRender(long delta) {
         //Console.WriteLine($"Video - {_counter++}");
 
-        _lol.Pixels.ByColor[_i].R = (byte)_rng.Next(0, 255);
-        _lol.Pixels.ByColor[_i].G = (byte)_rng.Next(0, 255);
-        _lol.Pixels.ByColor[_i].B = (byte)_rng.Next(0, 255);
+        _randomPixelsImage.Pixels.ByColor[_pixelIdx].R = (byte)_rng.Next(0, 255);
+        _randomPixelsImage.Pixels.ByColor[_pixelIdx].G = (byte)_rng.Next(0, 255);
+        _randomPixelsImage.Pixels.ByColor[_pixelIdx].B = (byte)_rng.Next(0, 255);
 
-        if(_j >= 0) {
-            switch(_j2) {
+        if(_overlayIdx >= 0) {
+            switch(_overlayStage) {
                 case 0:
-                    _lol2.Pixels.ByColor[_j].R = 255;
+                    _colorOverlayImage.Pixels.ByColor[_overlayIdx].R = 255;
                     break;
                 case 1:
-                    _lol2.Pixels.ByColor[_j].G = 255;
+                    _colorOverlayImage.Pixels.ByColor[_overlayIdx].G = 255;
                     break;
                 case 2:
-                    _lol2.Pixels.ByColor[_j].B = 255;
+                    _colorOverlayImage.Pixels.ByColor[_overlayIdx].B = 255;
                     break;
                 case 3:
-                    _lol2.Pixels.ByColor[_j].R = 0;
+                    _colorOverlayImage.Pixels.ByColor[_overlayIdx].R = 0;
                     break;
                 case 4:
-                    _lol2.Pixels.ByColor[_j].G = 0;
+                    _colorOverlayImage.Pixels.ByColor[_overlayIdx].G = 0;
                     break;
                 case 5:
-                    _lol2.Pixels.ByColor[_j].B = 0;
+                    _colorOverlayImage.Pixels.ByColor[_overlayIdx].B = 0;
                     break;
             }
         }
 
-        if(++_i >= NumPixels) {
-            _i = 0;
+        if(++_pixelIdx >= NumPixels) {
+            _pixelIdx = 0;
         }
 
-        if(++_j >= NumPixels / 4) {
-            _j = 0;
-            _j2 = _j2 == 5 ? 0 : _j2 + 1;
+        if(++_overlayIdx >= NumPixels / 4) {
+            _overlayIdx = 0;
+            _overlayStage = _overlayStage == 5 ? 0 : _overlayStage + 1;
         }
         
-        _lol.Update(new SdlRect(0, 0, DemoWidth, DemoHeight));
-        _lol2.Update(new SdlRect(0, 0, DemoWidth, DemoHeight));
+        _randomPixelsImage.Update(new SdlRect(0, 0, DemoWidth, DemoHeight));
+        _colorOverlayImage.Update(new SdlRect(0, 0, DemoWidth, DemoHeight));
     }
 }
