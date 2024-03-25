@@ -15,11 +15,11 @@ jobs:
        dotnet-version: [ "${{ vars.DOTNET_TARGET_SDK }}" ]
        
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0  # Avoid shallow clone so nbgv can do its work.
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
     - name: Restore dependencies
@@ -30,7 +30,7 @@ jobs:
       run: dotnet pack --configuration Release Spectere.SdlKit -o "NuPkg-${{ matrix.dotnet-version }}"
       if: ${{ always() }}  # Always run this step, even if there are test failures.
     - name: Upload NuGet package as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: dotnet-nuget-${{ matrix.dotnet-version }}
         path: NuPkg-${{ matrix.dotnet-version }}

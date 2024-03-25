@@ -12,11 +12,11 @@ jobs:
     runs-on: ubuntu-latest
        
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0  # Avoid shallow clone so nbgv can do its work.
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ vars.DOTNET_TARGET_SDK }}
     - name: Restore dependencies
@@ -26,7 +26,7 @@ jobs:
     - name: Create NuGet package (Spectere.SdlKit)
       run: dotnet pack --configuration Release Spectere.SdlKit -o "NuPkg-${{ vars.DOTNET_TARGET_SDK }}"
     - name: Upload NuGet package as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: dotnet-nuget-${{ vars.DOTNET_TARGET_SDK }}
         path: NuPkg-${{ vars.DOTNET_TARGET_SDK }}
