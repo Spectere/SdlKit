@@ -1,0 +1,36 @@
+name: SDLKit Release/Deployment
+
+on:
+  push:
+    branches: [ "release/**" ]
+  pull_request:
+    branches: [ "release/**" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+       
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # Avoid shallow clone so nbgv can do its work.
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ vars.DOTNET_TARGET_SDK }}
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Create NuGet package (Spectere.SdlKit)
+      run: dotnet pack --configuration Release Spectere.SdlKit -o "NuPkg-${{ vars.DOTNET_TARGET_SDK }}"
+    - name: Upload NuGet package as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: dotnet-nuget-${{ vars.DOTNET_TARGET_SDK }}
+        path: NuPkg-${{ vars.DOTNET_TARGET_SDK }}
+    - name: Publish NuGet packages
+      run: dotnet nuget push "NuPkg-${{ vars.DOTNET_TARGET_SDK }}/*.nupkg" -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{ secrets.SDLKIT_NUGET_KEY }}

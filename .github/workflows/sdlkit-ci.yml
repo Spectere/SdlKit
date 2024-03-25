@@ -1,0 +1,37 @@
+name: SDLKit CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+       dotnet-version: [ "${{ vars.DOTNET_TARGET_SDK }}" ]
+       
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # Avoid shallow clone so nbgv can do its work.
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Create NuGet package (Spectere.SdlKit)
+      run: dotnet pack --configuration Release Spectere.SdlKit -o "NuPkg-${{ matrix.dotnet-version }}"
+      if: ${{ always() }}  # Always run this step, even if there are test failures.
+    - name: Upload NuGet package as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: dotnet-nuget-${{ matrix.dotnet-version }}
+        path: NuPkg-${{ matrix.dotnet-version }}
+      if: ${{ always() }}  # Always run this step, even if there are test failures.

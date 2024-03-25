@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>12</LangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Interop\Sdl\Support\Rect\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Window.Events.cs">
+        <DependentUpon>Window.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Window.Video.cs">
+        <DependentUpon>Window.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Image.Static.cs">
+        <DependentUpon>Image.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+</Project>
