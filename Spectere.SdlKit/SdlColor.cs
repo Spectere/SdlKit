@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 namespace Spectere.SdlKit;
 
 /// <summary>
-/// 
+/// Represents a color in the format expected by SdlKit.
 /// </summary>
 /// <remarks>
 /// The bits of this structure can be directly reinterpreted as an integer-packed color which uses the RGBA32
@@ -36,4 +36,27 @@ public struct SdlColor {
     /// </summary>
     /// <returns>The value of this <see cref="SdlColor"/> in hex format (#RRGGBBAA).</returns>
     public override string ToString() => $"#{R:X2}{G:X2}{B:X2}{A:X2}";
+
+    /// <summary>
+    /// Initializes a new <see cref="SdlColor"/> with the default values.
+    /// </summary>
+    public SdlColor() { }
+
+    /// <summary>
+    /// Initializes a new <see cref="SdlColor"/> with defined color components.
+    /// </summary>
+    /// <param name="red">The red component of the new <see cref="SdlColor"/>. This can be any valid <see cref="byte"/>
+    /// value.</param>
+    /// <param name="green">The green component of the new <see cref="SdlColor"/>. This can be any valid
+    /// <see cref="byte"/> value.</param>
+    /// <param name="blue">The blue component of the new <see cref="SdlColor"/>. This can be any valid
+    /// <see cref="byte"/> value.</param>
+    /// <param name="alpha">The alpha component of the new <see cref="SdlColor"/>. This can be any valid
+    /// <see cref="byte"/> value. If this is not specified, this defaults to <see cref="byte.MaxValue"/>.</param>
+    public SdlColor(byte red, byte green, byte blue, byte alpha = byte.MaxValue) {
+        R = red;
+        G = green;
+        B = blue;
+        A = alpha;
+    }
 }

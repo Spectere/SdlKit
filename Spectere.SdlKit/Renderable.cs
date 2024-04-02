@@ -37,6 +37,27 @@ public abstract class Renderable : IRenderable, IDisposable {
     private BlendMode _blendMode;
 
     /// <inheritdoc/>
+    public SdlColor ColorModulation {
+        get {
+            var sdlColor = new SdlColor();
+            if(_nullTexture) {
+                return sdlColor;
+            }
+            
+            _ = Render.GetTextureColorMod(SdlTexture, ref sdlColor.R, ref sdlColor.G, ref sdlColor.B);
+            return sdlColor;
+        }
+
+        set {
+            if(_nullTexture) {
+                return;
+            }
+
+            _ = Render.SetTextureColorMod(SdlTexture, value.R, value.G, value.B);
+        }
+    }
+
+    /// <inheritdoc/>
     public SdlRect? Destination {
         get => _destination;
         set => _destination = value ?? new SdlRect(0, 0, Width, Height);

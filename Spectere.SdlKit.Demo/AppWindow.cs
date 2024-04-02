@@ -101,6 +101,7 @@ public class AppWindow : Window {
         _fontImage.ZOrder = 100;
         _fontImage.Window = new SdlRect(16, 3, 8, 10);
         _fontImage.Destination = new SdlRect(0, 0, 8, 10);
+        _fontImage.BlendMode = BlendMode.Alpha;
         AddRenderable(_fontImage);
     }
 

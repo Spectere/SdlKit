@@ -31,7 +31,22 @@ public partial class Window {
     /// A GUID identifying the video update timer.
     /// </summary>
     private Guid _videoTimerGuid = Guid.Empty;
-    
+
+    /// <summary>
+    /// Gets or sets this window's rendering target's color modulation value. This will effectively tint the entire
+    /// screen.
+    /// </summary>
+    public SdlColor ColorModulation {
+        get => _renderTarget?.ColorModulation ?? new SdlColor();
+        set {
+            if(_renderTarget is null) {
+                return;
+            }
+            
+            _renderTarget.ColorModulation = value;
+        }
+    }
+
     /// <summary>
     /// Gets or sets whether or not this window appears in fullscreen.
     /// </summary>

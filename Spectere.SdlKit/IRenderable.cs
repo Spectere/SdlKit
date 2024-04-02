@@ -10,6 +10,13 @@ public interface IRenderable : IComparable<IRenderable> {
     public BlendMode BlendMode { get; set; }
     
     /// <summary>
+    /// Sets an additional color value multiplied into all rendering operations. This will cause the texture to be
+    /// tinted by the given <see cref="SdlColor"/> when the texture is copied. Note that the alpha channel of the
+    /// <see cref="SdlColor"/> will be ignored by this operation.
+    /// </summary>
+    public SdlColor ColorModulation { get; set; }
+    
+    /// <summary>
     /// The screen-space coordinates where this <see cref="IRenderable"/> should be drawn. The
     /// <see cref="SdlRect.Position"/> field corresponds to the upper-left corner of where this will be drawn to the
     /// screen, and the <see cref="SdlRect.Size"/> indicates the size in which this will be drawn. If this is larger

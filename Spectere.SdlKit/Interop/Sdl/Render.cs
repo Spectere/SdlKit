@@ -73,6 +73,18 @@ internal static class Render {
     internal static extern int GetRendererOutputSize(SdlRenderer renderer, ref int w, ref int h);
 
     /// <summary>
+    /// Get the additional color value multiplied into render copy operations.
+    /// </summary>
+    /// <param name="texture">The <see cref="SdlTexture"/> to query.</param>
+    /// <param name="r">A pointer filled in with the current red color value.</param>
+    /// <param name="g">A pointer filled in with the current green color value.</param>
+    /// <param name="b">A pointer filled in with the current blue color value.</param>
+    /// <returns>0 on success, or a negative error code on failure; call <see cref="Error.GetError"/> for more
+    /// information.</returns>
+    [DllImport(Lib.Sdl2, EntryPoint = "SDL_GetTextureColorMod", CallingConvention = CallingConvention.Cdecl)]
+    internal static extern int GetTextureColorMod(SdlTexture texture, ref byte r, ref byte g, ref byte b);
+
+    /// <summary>
     /// Locks a portion of a texture for write-only pixel access.
     /// </summary>
     /// <param name="texture">The texture to lock for access. This texture must have been created with <see cref="TextureAccess.Streaming"/>.</param>
