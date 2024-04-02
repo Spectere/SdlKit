@@ -59,6 +59,15 @@ internal static class Render {
     internal static extern void DestroyTexture(SdlTexture texture);
 
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="texture"></param>
+    /// <param name="alpha"></param>
+    /// <returns></returns>
+    [DllImport(Lib.Sdl2, EntryPoint = "SDL_GetTextureAlphaMod", CallingConvention = CallingConvention.Cdecl)]
+    internal static extern int GetTextureAlphaMod(SdlTexture texture, out byte alpha);
+
+    /// <summary>
     /// Get the output size in pixels of a rendering context.
     /// </summary>
     /// <remarks>
@@ -70,7 +79,7 @@ internal static class Render {
     /// <param name="h">An <see cref="int"/> filled in with the height.</param>
     /// <returns>0 on success or a negative value on failure; call <see cref="Error.GetError"/> for more information.</returns>
     [DllImport(Lib.Sdl2, EntryPoint = "SDL_GetRendererOutputSize", CallingConvention = CallingConvention.Cdecl)]
-    internal static extern int GetRendererOutputSize(SdlRenderer renderer, ref int w, ref int h);
+    internal static extern int GetRendererOutputSize(SdlRenderer renderer, out int w, out int h);
 
     /// <summary>
     /// Get the additional color value multiplied into render copy operations.
@@ -82,7 +91,7 @@ internal static class Render {
     /// <returns>0 on success, or a negative error code on failure; call <see cref="Error.GetError"/> for more
     /// information.</returns>
     [DllImport(Lib.Sdl2, EntryPoint = "SDL_GetTextureColorMod", CallingConvention = CallingConvention.Cdecl)]
-    internal static extern int GetTextureColorMod(SdlTexture texture, ref byte r, ref byte g, ref byte b);
+    internal static extern int GetTextureColorMod(SdlTexture texture, out byte r, out byte g, out byte b);
 
     /// <summary>
     /// Locks a portion of a texture for write-only pixel access.

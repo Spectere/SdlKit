@@ -5,15 +5,23 @@ namespace Spectere.SdlKit;
 /// </summary>
 public interface IRenderable : IComparable<IRenderable> {
     /// <summary>
+    /// Gets or sets the alpha modulation value that will be multiplied into all rendering operations. This will cause
+    /// the texture to appear translucent when rendered, with higher values appearing more opaque.
+    /// </summary>
+    /// /// <seealso cref="ColorModulation"/>
+    public byte AlphaModulation { get; set; }
+    
+    /// <summary>
     /// The blending mode used for this <see cref="IRenderable"/>.
     /// </summary>
     public BlendMode BlendMode { get; set; }
     
     /// <summary>
-    /// Sets an additional color value multiplied into all rendering operations. This will cause the texture to be
-    /// tinted by the given <see cref="SdlColor"/> when the texture is copied. Note that the alpha channel of the
+    /// Gets or sets an additional color value multiplied into all rendering operations. This will cause the texture
+    /// to be tinted by the given <see cref="SdlColor"/> when the texture is copied. Note that the alpha channel of the
     /// <see cref="SdlColor"/> will be ignored by this operation.
     /// </summary>
+    /// <seealso cref="AlphaModulation"/>
     public SdlColor ColorModulation { get; set; }
     
     /// <summary>

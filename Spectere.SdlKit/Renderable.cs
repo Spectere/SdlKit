@@ -27,6 +27,27 @@ public abstract class Renderable : IRenderable, IDisposable {
     private protected readonly TextureAccess TextureAccess;
 
     /// <inheritdoc/>
+    public byte AlphaModulation {
+        get {
+            byte alpha = 255;
+            if(_nullTexture) {
+                return alpha;
+            }
+
+            _ = Render.GetTextureAlphaMod(SdlTexture, out alpha);
+            return alpha;
+        }
+        
+        set {
+            if(_nullTexture) {
+                return;
+            }
+
+            _ = Render.SetTextureAlphaMod(SdlTexture, value);
+        }
+    }
+
+    /// <inheritdoc/>
     public BlendMode BlendMode {
         get => _blendMode;
         set {
@@ -44,7 +65,7 @@ public abstract class Renderable : IRenderable, IDisposable {
                 return sdlColor;
             }
             
-            _ = Render.GetTextureColorMod(SdlTexture, ref sdlColor.R, ref sdlColor.G, ref sdlColor.B);
+            _ = Render.GetTextureColorMod(SdlTexture, out sdlColor.R, out sdlColor.G, out sdlColor.B);
             return sdlColor;
         }
 
