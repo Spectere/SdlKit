@@ -139,6 +139,17 @@ internal static class Render {
     /// <returns>0 on success, -1 on error.</returns>
     [DllImport(Lib.Sdl2, EntryPoint = "SDL_RenderClear", CallingConvention = CallingConvention.Cdecl)]
     internal static extern int RenderClear(SdlRenderer renderer);
+
+    /// <summary>
+    /// Copy a portion of the texture to the current rendering target.
+    /// </summary>
+    /// <param name="renderer">The rendering context.</param>
+    /// <param name="texture">The source texture.</param>
+    /// <param name="srcRect">The source rectangle, or <c>null</c> for the entire texture.</param>
+    /// <param name="dstRect">The destination rectangle, or <c>null</c> For the entire rendering target.</param>
+    /// <returns>0 on success, or -1 on error.</returns>
+    [DllImport(Lib.Sdl2, EntryPoint = "SDL_RenderCopy", CallingConvention = CallingConvention.Cdecl)]
+    internal static extern int RenderCopy(SdlRenderer renderer, SdlTexture texture, ref SdlRect srcRect, ref SdlRect dstRect);
     
     /// <summary>
     /// Copy a portion of the texture to the current rendering target.
@@ -161,6 +172,28 @@ internal static class Render {
         ref SdlPoint center,
         FlipDirection flip
     );
+
+    /// <summary>
+    /// Fill a rectangle on the current rendering target with the drawing color.
+    /// </summary>
+    /// <param name="renderer">The rendering context.</param>
+    /// <param name="rect">The <see cref="SdlRect"/> structure representing the rectangle to fill.</param>
+    /// <returns>0 on success or a negative error code on failure; call <see cref="Error.GetError"/> for more
+    /// information.</returns>
+    [DllImport(Lib.Sdl2, EntryPoint = "SDL_RenderFillRect", CallingConvention = CallingConvention.Cdecl)]
+    internal static extern int RenderFillRect(SdlRenderer renderer, ref SdlRect rect);
+
+    /// <summary>
+    /// Fill some number of rectangles on the current rendering target with the drawing color.
+    /// </summary>
+    /// <param name="renderer">The rendering context.</param>
+    /// <param name="rects">An array of <see cref="SdlRect"/> structures representing the rectangles to be
+    /// filled.</param>
+    /// <param name="count">The number of rectangles.</param>
+    /// <returns>0 on success or a negative error code on failure; call <see cref="Error.GetError"/> for more
+    /// information.</returns>
+    [DllImport(Lib.Sdl2, EntryPoint = "SDL_RenderFillRects", CallingConvention = CallingConvention.Cdecl)]
+    internal static extern int RenderFillRects(SdlRenderer renderer, SdlRect[] rects, int count);
 
     /// <summary>
     /// Update the screen with the rendering performed.
@@ -188,6 +221,19 @@ internal static class Render {
     /// <returns>0 on success or a negative error code on failure.</returns>
     [DllImport(Lib.Sdl2, EntryPoint = "SDL_SetTextureColorMod", CallingConvention = CallingConvention.Cdecl)]
     internal static extern int SetTextureColorMod(SdlTexture texture, byte r, byte g, byte b);
+
+    /// <summary>
+    /// Set the color used for drawing operations (rect, line, and clear).
+    /// </summary>
+    /// <param name="renderer">The rendering context.</param>
+    /// <param name="r">The red value used to draw on the rendering target.</param>
+    /// <param name="g">The green value used to draw on the rendering target.</param>
+    /// <param name="b">The blue value used to draw on the rendering target.</param>
+    /// <param name="a">The alpha value used to draw on the rendering target.</param>
+    /// <returns>0 on success or a negative error code on failure; call <see cref="Error.GetError"/> for more
+    /// information.</returns>
+    [DllImport(Lib.Sdl2, EntryPoint = "SDL_SetRenderDrawColor", CallingConvention = CallingConvention.Cdecl)]
+    internal static extern int SetRenderDrawColor(SdlRenderer renderer, byte r, byte g, byte b, byte a);
 
     /// <summary>
     /// Sets a texture as the current rendering target.

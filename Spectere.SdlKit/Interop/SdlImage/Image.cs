@@ -15,7 +15,7 @@ public class Image {
     /// </summary>
     /// <param name="anim">The <see cref="Animation"/> to dispose of.</param>
     [DllImport(Lib.Sdl2Image, EntryPoint = "IMG_FreeAnimation", CallingConvention = CallingConvention.Cdecl)]
-    internal static extern void FreeAnimation(ref Animation anim);
+    internal static extern void FreeAnimation(Animation anim);
     
     /// <summary>
     /// Initialize SDL_image. This function loads dynamic libraries that SDL_image needs, and prepares them for use.
@@ -446,7 +446,7 @@ public class Image {
     /// <param name="file">A path on the filesystem to load an image from.</param>
     /// <returns>A new <see cref="SdlTexture"/>, or <c>null</c> on error.</returns>
     [DllImport(Lib.Sdl2Image, EntryPoint = "IMG_LoadTexture", CallingConvention = CallingConvention.Cdecl)]
-    internal static extern ref SdlTexture LoadTexture(out SdlRenderer renderer, string file);
+    internal static extern ref SdlTexture LoadTexture(SdlRenderer renderer, string file);
 
     /// <summary>
     /// Loads an image from an SDL data source into a GPU texture.
@@ -461,7 +461,7 @@ public class Image {
     /// <param name="freeSrc">Non-zero to close/free the SDL RWops before returning, zero to leave it open.</param>
     /// <returns>A new <see cref="SdlTexture"/>, or <c>null</c> on error.</returns>
     [DllImport(Lib.Sdl2Image, EntryPoint = "IMG_LoadTexture_RW", CallingConvention = CallingConvention.Cdecl)]
-    internal static extern ref SdlTexture LoadTextureRw(out SdlRenderer renderer, SdlRwOps src, int freeSrc);
+    internal static extern ref SdlTexture LoadTextureRw(SdlRenderer renderer, SdlRwOps src, int freeSrc);
 
     /// <summary>
     /// Loads an image from an SDL data source into a GPU texture.
@@ -477,7 +477,7 @@ public class Image {
     /// <param name="type">A filename extension that represents this data ("BMP", "GIF", "PNG", etc.).</param>
     /// <returns>A new <see cref="SdlTexture"/>, or <c>null</c> on error.</returns>
     [DllImport(Lib.Sdl2Image, EntryPoint = "IMG_LoadTextureTyped_RW", CallingConvention = CallingConvention.Cdecl)]
-    internal static extern ref SdlTexture LoadTextureTypedRw(out SdlRenderer renderer, IntPtr src, int freeSrc, string type);
+    internal static extern ref SdlTexture LoadTextureTypedRw(SdlRenderer renderer, IntPtr src, int freeSrc, string type);
     
         /// <summary>
     /// Load an image in the TGA format directly. If you know the format of the image, you can call this function,

@@ -1,4 +1,3 @@
-using SdlHints = Spectere.SdlKit.Interop.Sdl.Support.Hints;
 using Spectere.SdlKit.Exceptions;
 using Spectere.SdlKit.Interop.Sdl;
 using Spectere.SdlKit.Interop.Sdl.Support.Render;
@@ -236,7 +235,7 @@ public abstract class Renderable : IRenderable, IDisposable {
 
         // Set the scale quality (texture filtering) hint appropriately.
         TextureFiltering = textureFiltering;
-        SetTextureFilteringMode(TextureFiltering);
+        SdlHintHelper.SetTextureFilteringMode(TextureFiltering);
         
         // Finally, create the texture.
         SdlTexture = Render.CreateTexture(SdlRenderer, _pixelFormat, TextureAccess, width, height);
@@ -332,19 +331,6 @@ public abstract class Renderable : IRenderable, IDisposable {
             var message = Error.GetError();
             throw new SdlTextureInitializationException(message);
         }
-    }
-
-    /// <summary>
-    /// Sets the texture filtering hint. This must be used before a new SDL texture is created.
-    /// </summary>
-    /// <param name="textureFiltering">The <see cref="TextureFiltering"/> mode that should be set.</param>
-    internal static void SetTextureFilteringMode(TextureFiltering textureFiltering) {
-        _ = Hints.SetHint(
-            SdlHints.RenderScaleQuality.Name,
-            textureFiltering == TextureFiltering.Nearest
-                ? SdlHints.RenderScaleQuality.Nearest
-                : SdlHints.RenderScaleQuality.Linear
-        );
     }
 
     /// <summary>

@@ -114,6 +114,51 @@ public class AppWindow : Window {
         _fontImage.Destination = new SdlRect(0, 0, 40, 50);
         _fontImage.BlendMode = BlendMode.Alpha;
         AddRenderable(_fontImage);
+
+        var testConsoleWidth = TargetPixelWidth / 2;
+        var testConsoleHeight = TargetPixelHeight / 2;
+        var smileConsole = new SdlKitConsole(this, testConsoleWidth, testConsoleHeight,
+            "Assets/SpectereFont-8x16.png", 8, 16);
+        smileConsole.ZOrder = 8;
+        smileConsole.DefaultGlyph = new Glyph {
+            GlyphIndex = ' ',
+            ForegroundColor = new SdlColor(192, 192, 192),
+            BackgroundColor = new SdlColor(0, 0, 192)
+        };
+        smileConsole.Destination = new SdlRect(0, 150, 200, 150);
+        smileConsole.PaddingColor = new SdlColor(64, 64, 255);
+        smileConsole.GlyphPadding = new Padding(1, 0);
+        smileConsole.ConsolePadding = new Padding(2, 0);
+        smileConsole.CenterTextArea();
+        smileConsole.Clear();
+        for(var y = 0; y < smileConsole.ConsoleHeight; y++)
+        for(var x = 0; x < smileConsole.ConsoleWidth; x++) {
+            smileConsole.SetCell(
+                x, y, _rng.Next(1, 3),
+                new SdlColor((byte)_rng.Next(0, 256), (byte)_rng.Next(0, 256), (byte)_rng.Next(0, 256)),
+                null
+            );
+        }
+        AddRenderable(smileConsole);
+
+        var textConsole = new SdlKitConsole(this, testConsoleWidth, testConsoleHeight,
+            "Assets/SpectereFont-8x16.png", 8, 16);
+        textConsole.ZOrder = 1000;
+        textConsole.Destination = new SdlRect(200, 150, 200, 150);
+        textConsole.CenterTextArea();
+        textConsole.Clear();
+        textConsole.WriteLine("Line 1...");
+        textConsole.WriteLine("  Line 2...");
+        textConsole.WriteLine("    Line 3...");
+        textConsole.WriteLine("  Line 4...");
+        textConsole.WriteLine("Line 5...");
+        textConsole.WriteLine("  Line 6...");
+        textConsole.WriteLine("    Line 7...");
+        textConsole.WriteLine("  Line 8...");
+        textConsole.WriteLine("Line 9...");
+        textConsole.WriteLine("  Line A...");
+        textConsole.Write("lmao \x01\b\x03\rlove");
+        AddRenderable(textConsole);
     }
 
     private bool _upPress;

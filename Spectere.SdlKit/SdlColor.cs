@@ -59,4 +59,25 @@ public struct SdlColor {
         B = blue;
         A = alpha;
     }
+
+    public static bool operator ==(SdlColor left, SdlColor right) =>
+        left.R == right.R
+        && left.G == right.G
+        && left.B == right.B
+        && left.A == right.A;
+
+    public static bool operator !=(SdlColor left, SdlColor right) => !(left == right);
+    
+    /// <summary>
+    /// Compares two <see cref="SdlColor"/> structures for equality.
+    /// </summary>
+    /// <param name="other">The <see cref="SdlColor"/> that should be compared to this instance.</param>
+    /// <returns><c>true</c> if the structures are equal, otherwise <c>false</c>.</returns>
+    public bool Equals(SdlColor other) => this == other;
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj) => obj is Padding other && Equals(other);
+    
+    /// <inheritdoc/>
+    public override int GetHashCode() => HashCode.Combine(R, G, B, A);
 }

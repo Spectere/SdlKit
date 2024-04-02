@@ -52,7 +52,7 @@ public partial class Image {
         Surface.FreeSurface(loadedSurface);
         
         // 4. Create a texture from the surface.
-        SetTextureFilteringMode(textureFiltering);
+        SdlHintHelper.SetTextureFilteringMode(textureFiltering);
         var newTexture = Render.CreateTextureFromSurface(renderer, rgba32Surface);
         if(newTexture.IsNull) {
             var sdlError = Error.GetError();
