@@ -3,7 +3,7 @@ using Spectere.SdlKit.Interop.Sdl;
 using Spectere.SdlKit.Interop.Sdl.Support.Render;
 using System.ComponentModel;
 
-namespace Spectere.SdlKit;
+namespace Spectere.SdlKit.Renderables;
 
 /// <summary>
 /// Represents a image. This is a flexible object that can represent anything from backgrounds to sprites. 

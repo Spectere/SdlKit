@@ -2,6 +2,7 @@ using SdlHints = Spectere.SdlKit.Interop.Sdl.Support.Hints;
 using Spectere.SdlKit.Exceptions;
 using Spectere.SdlKit.Interop.Sdl;
 using Spectere.SdlKit.Interop.Sdl.Support.Render;
+using Spectere.SdlKit.Renderables;
 
 namespace Spectere.SdlKit;
 

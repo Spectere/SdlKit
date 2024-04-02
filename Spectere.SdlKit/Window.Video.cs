@@ -3,6 +3,7 @@ using Spectere.SdlKit.Interop.Sdl;
 using Spectere.SdlKit.Interop.Sdl.Support.Init;
 using Spectere.SdlKit.Interop.Sdl.Support.Render;
 using Spectere.SdlKit.Interop.Sdl.Support.Video;
+using Spectere.SdlKit.Renderables;
 
 namespace Spectere.SdlKit;
 

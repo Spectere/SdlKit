@@ -1,4 +1,5 @@
 using Spectere.SdlKit.Interop.Sdl;
+using Spectere.SdlKit.Renderables;
 
 namespace Spectere.SdlKit;
 

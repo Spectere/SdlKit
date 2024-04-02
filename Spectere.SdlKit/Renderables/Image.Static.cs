@@ -1,10 +1,10 @@
 using Spectere.SdlKit.Exceptions;
 using Spectere.SdlKit.Interop.Sdl;
-using SdlImage = Spectere.SdlKit.Interop.SdlImage.Image;
 using Spectere.SdlKit.Interop.Sdl.Support.Render;
 using Spectere.SdlKit.Interop.SdlImage.Support.Image;
+using SdlImage = Spectere.SdlKit.Interop.SdlImage.Image;
 
-namespace Spectere.SdlKit;
+namespace Spectere.SdlKit.Renderables;
 
 public partial class Image {
     /// <summary>

@@ -2,7 +2,7 @@ using Spectere.SdlKit.Exceptions;
 using Spectere.SdlKit.Interop.Sdl;
 using Spectere.SdlKit.Interop.Sdl.Support.Render;
 
-namespace Spectere.SdlKit;
+namespace Spectere.SdlKit.Renderables;
 
 /// <summary>
 /// Defines an SDL rendering target. This cannot be drawn to directly and instead is a collage of different
