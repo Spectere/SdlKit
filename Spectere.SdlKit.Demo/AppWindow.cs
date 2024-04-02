@@ -10,8 +10,16 @@ namespace Spectere.SdlKit.Demo;
 
 // The application window should inherit the Spectere.SdlKit.Window class.
 public class AppWindow : Window {
-    private const int DemoWidth = 40;
-    private const int DemoHeight = 30;
+    private const int TargetPixelWidth = 400;
+    private const int TargetPixelHeight = 300;
+
+    private const int MouseSurfaceWidth = 80;
+    private const int MouseSurfaceHeight = 60;
+    private const int MouseSurfacePixels = MouseSurfaceWidth * MouseSurfaceHeight;
+    private const decimal MouseSurfaceScale = (decimal)MouseSurfaceWidth / TargetPixelWidth;
+    
+    private const int PixelBlobWidth = 40;
+    private const int PixelBlobHeight = 30;
 
     private int _drawState;
     private readonly decimal _scale;
@@ -25,10 +33,10 @@ public class AppWindow : Window {
     // The window's constructor can perform any initialization tasks that it needs to perform, but it must also
     // call the base constructor to set up the SDL window and renderer.
     public AppWindow(decimal scale) : base(
-        renderWidth: DemoWidth,
-        renderHeight: DemoHeight,
-        windowWidth: (int)(DemoWidth * scale),
-        windowHeight: (int)(DemoHeight * scale),
+        renderWidth: TargetPixelWidth,
+        renderHeight: TargetPixelHeight,
+        windowWidth: (int)(TargetPixelWidth * scale),
+        windowHeight: (int)(TargetPixelHeight * scale),
         refreshRate: 60,
         title: "SDLKit Demo",
         fullscreen: false
@@ -63,13 +71,14 @@ public class AppWindow : Window {
         //
         _scale = scale;
         
-        _randomPixelsImage = new Image(this, ImageType.Streaming, DemoWidth, DemoHeight);
+        _randomPixelsImage = new Image(this, ImageType.Streaming, PixelBlobWidth, PixelBlobHeight);
+        _randomPixelsImage.Destination = new SdlRect(0, 0, TargetPixelWidth, TargetPixelHeight);
         _randomPixelsImage.ZOrder = 0;
         AddRenderable(_randomPixelsImage);
 
-        _colorOverlayImage = new Image(this, ImageType.Static, DemoWidth / 2, DemoHeight / 2, TextureFiltering.Linear);
+        _colorOverlayImage = new Image(this, ImageType.Static, PixelBlobWidth / 2, PixelBlobHeight / 2, TextureFiltering.Linear);
         _colorOverlayImage.BlendMode = BlendMode.Alpha;
-        _colorOverlayImage.Destination = new SdlRect(0, 0, DemoWidth, DemoHeight);
+        _colorOverlayImage.Destination = new SdlRect(0, 0, TargetPixelWidth, TargetPixelHeight);
         _colorOverlayImage.ZOrder = 1;
         for(var i = 0; i < _colorOverlayImage.Pixels.ByColor.Length; i++) {
             _colorOverlayImage.Pixels.ByColor[i].A = 64;
@@ -78,7 +87,7 @@ public class AppWindow : Window {
         AddRenderable(_colorOverlayImage);
 
         var diamondTarget = new RenderTarget(this, 4, 4, TextureFiltering.Linear);
-        diamondTarget.Destination = new SdlRect(18, 10, 8, 8);
+        diamondTarget.Destination = new SdlRect(198, 94, 80, 80);
         diamondTarget.ZOrder = 2;
         diamondTarget.RotationAngle = 45.0d;
         AddRenderable(diamondTarget);
@@ -93,15 +102,16 @@ public class AppWindow : Window {
         }
         diamondImage.Update(null);
 
-        _paintSurfaceImage = new Image(this, ImageType.Streaming, DemoWidth, DemoHeight);
-        _paintSurfaceImage.ZOrder = 10;
+        _paintSurfaceImage = new Image(this, ImageType.Streaming, MouseSurfaceWidth, MouseSurfaceHeight);
         _paintSurfaceImage.BlendMode = BlendMode.Alpha;
+        _paintSurfaceImage.Destination = new SdlRect(0, 0, TargetPixelWidth, TargetPixelHeight);
+        _paintSurfaceImage.ZOrder = 10;
         AddRenderable(_paintSurfaceImage);
 
         _fontImage = Image.FromFile(this, "Assets/SpectereFont-8x16.png");
         _fontImage.ZOrder = 100;
         _fontImage.Window = new SdlRect(16, 3, 8, 10);
-        _fontImage.Destination = new SdlRect(0, 0, 8, 10);
+        _fontImage.Destination = new SdlRect(0, 0, 40, 50);
         _fontImage.BlendMode = BlendMode.Alpha;
         AddRenderable(_fontImage);
     }
@@ -236,25 +246,31 @@ public class AppWindow : Window {
     }
     
     private void MouseMotion(object? sender, MouseMotionEventArgs e) {
-        if(_drawState == 0 || _drawState >= 4) {
+        if(_drawState is 0 or >= 4) {
             return;
         }
 
-        var pixelX = Convert.ToInt32(Math.Floor(e.PointerX / _scale));
-        var pixelY = Convert.ToInt32(Math.Floor(e.PointerY / _scale));
+        var pixelX = Convert.ToInt32(Math.Floor(e.PointerX * MouseSurfaceScale / _scale));
+        var pixelY = Convert.ToInt32(Math.Floor(e.PointerY * MouseSurfaceScale / _scale));
+        var pixelIdx = pixelY * MouseSurfaceWidth + pixelX;
+        if(pixelIdx is < 0 or >= MouseSurfacePixels
+           || pixelX is < 0 or >= MouseSurfaceWidth
+           || pixelY is < 0 or MouseSurfaceHeight) {
+            return;
+        }
 
         if(_drawState == 1) {
-            _paintSurfaceImage.Pixels.ByColor[pixelY * DemoWidth + pixelX].R = 255;
-            _paintSurfaceImage.Pixels.ByColor[pixelY * DemoWidth + pixelX].G = 255;
-            _paintSurfaceImage.Pixels.ByColor[pixelY * DemoWidth + pixelX].B = 255;
-            _paintSurfaceImage.Pixels.ByColor[pixelY * DemoWidth + pixelX].A = 255;
+            _paintSurfaceImage.Pixels.ByColor[pixelIdx].R = 255;
+            _paintSurfaceImage.Pixels.ByColor[pixelIdx].G = 255;
+            _paintSurfaceImage.Pixels.ByColor[pixelIdx].B = 255;
+            _paintSurfaceImage.Pixels.ByColor[pixelIdx].A = 255;
         } else if(_drawState == 3) {
-            _paintSurfaceImage.Pixels.ByColor[pixelY * DemoWidth + pixelX].R = 0;
-            _paintSurfaceImage.Pixels.ByColor[pixelY * DemoWidth + pixelX].G = 0;
-            _paintSurfaceImage.Pixels.ByColor[pixelY * DemoWidth + pixelX].B = 0;
-            _paintSurfaceImage.Pixels.ByColor[pixelY * DemoWidth + pixelX].A = 255;
+            _paintSurfaceImage.Pixels.ByColor[pixelIdx].R = 0;
+            _paintSurfaceImage.Pixels.ByColor[pixelIdx].G = 0;
+            _paintSurfaceImage.Pixels.ByColor[pixelIdx].B = 0;
+            _paintSurfaceImage.Pixels.ByColor[pixelIdx].A = 255;
         } else {
-            _paintSurfaceImage.Pixels.ByColor[pixelY * DemoWidth + pixelX].A = 0;
+            _paintSurfaceImage.Pixels.ByColor[pixelIdx].A = 0;
         }
         
         _paintSurfaceImage.Update(new SdlRect(pixelX, pixelY, 1, 1));
@@ -283,8 +299,8 @@ public class AppWindow : Window {
     }
 
     //private int _counter;
-    private int _playerX = 0;
-    private int _playerY = 0;
+    private int _playerX;
+    private int _playerY;
 
     private void UpdateTitle() {
         Title = $"SDLKit Demo - ({_playerX}, {_playerY})";
@@ -295,16 +311,16 @@ public class AppWindow : Window {
             _playerX = 0;
         }
 
-        if(_playerX > DemoWidth - 8) {
-            _playerX = DemoWidth - 8;
+        if(_playerX > TargetPixelWidth - 40) {
+            _playerX = TargetPixelWidth - 40;
         }
 
         if(_playerY < 0) {
             _playerY = 0;
         }
 
-        if(_playerY > DemoHeight - 10) {
-            _playerY = DemoHeight - 10;
+        if(_playerY > TargetPixelHeight - 50) {
+            _playerY = TargetPixelHeight - 50;
         }
     }
     
@@ -314,20 +330,20 @@ public class AppWindow : Window {
 
         if(_fontImage.Destination is not null) {
             if(_upPress) {
-                _playerY -= 1;
+                _playerY -= 4;
             } else if(_downPress) {
-                _playerY += 1;
+                _playerY += 4;
             }
             
             if(_leftPress) {
-                _playerX -= 1;
+                _playerX -= 4;
             } else if(_rightPress) {
-                _playerX += 1;
+                _playerX += 4;
             }
         }
 
         ClampPlayerSpriteLocation();
-        _fontImage.Destination = new SdlRect(_playerX, _playerY, 8, 10);
+        _fontImage.Destination = new SdlRect(_playerX, _playerY, 40, 50);
         UpdateTitle();
         
         // Let's get ready to rumble!!
@@ -340,7 +356,7 @@ public class AppWindow : Window {
     private int _pixelIdx;
     private int _overlayIdx = -NumPixels / 4;
     private int _overlayStage;
-    private const int NumPixels = DemoWidth * DemoHeight;
+    private const int NumPixels = PixelBlobWidth * PixelBlobHeight;
     private readonly Random _rng = new();
     protected override void VideoPreRender(long delta) {
         //Console.WriteLine($"Video - {_counter++}");
@@ -381,7 +397,7 @@ public class AppWindow : Window {
             _overlayStage = _overlayStage == 5 ? 0 : _overlayStage + 1;
         }
         
-        _randomPixelsImage.Update(new SdlRect(0, 0, DemoWidth, DemoHeight));
-        _colorOverlayImage.Update(new SdlRect(0, 0, DemoWidth, DemoHeight));
+        _randomPixelsImage.Update(new SdlRect(0, 0, PixelBlobWidth, PixelBlobHeight));
+        _colorOverlayImage.Update(new SdlRect(0, 0, PixelBlobWidth, PixelBlobHeight));
     }
 }
