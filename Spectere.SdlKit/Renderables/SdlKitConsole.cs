@@ -49,7 +49,7 @@ public class SdlKitConsole : Renderable {
     /// <summary>
     /// The total number of glyphs in the console text area.
     /// </summary>
-    private int _glyphTotalCount;
+    private int _consoleTotalGlyphs;
 
     /// <summary>
     /// The total height of each glyph, including padding.
@@ -328,22 +328,22 @@ public class SdlKitConsole : Renderable {
         // Calculate the number of glyphs that can fit within the text area.
         ConsoleWidth = _textAreaWidth / _glyphTotalWidth;
         ConsoleHeight = _textAreaHeight / _glyphTotalHeight;
-        _glyphTotalCount = ConsoleWidth * ConsoleHeight;
+        _consoleTotalGlyphs = ConsoleWidth * ConsoleHeight;
         
         // Readjust the total text area based on the number of glyphs we can actually draw.
         _textAreaWidth = ConsoleWidth * _glyphTotalWidth;
         _textAreaHeight = ConsoleHeight * _glyphTotalHeight;
         
         // Only resize the buffer array if necessary.
-        if(_consoleBuffer.Length == _glyphTotalCount) return;
+        if(_consoleBuffer.Length == _consoleTotalGlyphs) return;
         
-        var newBuffer = new Glyph[_glyphTotalCount];
-        var glyphsToCopy = _glyphTotalCount < _consoleBuffer.Length ? _glyphTotalCount : _consoleBuffer.Length;
+        var newBuffer = new Glyph[_consoleTotalGlyphs];
+        var glyphsToCopy = _consoleTotalGlyphs < _consoleBuffer.Length ? _consoleTotalGlyphs : _consoleBuffer.Length;
         Array.Copy(_consoleBuffer, newBuffer, glyphsToCopy);
         _consoleBuffer = newBuffer;
         
         // Pad the remainder of the array (if applicable) with DefaultGlyph.
-        if(_glyphTotalCount <= glyphsToCopy) return;
+        if(_consoleTotalGlyphs <= glyphsToCopy) return;
 
         var glyphsToFill = _consoleBuffer.Length - glyphsToCopy - 1;
         Array.Fill(_consoleBuffer, DefaultGlyph, glyphsToCopy, glyphsToFill);
@@ -428,7 +428,7 @@ public class SdlKitConsole : Renderable {
                                         $"Position requested: ({x}, {y}); possible locations: (0, 0)-({ConsoleWidth - 1}, {ConsoleHeight - 1})");
         }
 
-        if(glyphIndex >= _glyphTotalCount) {
+        if(glyphIndex >= _consoleTotalGlyphs) {
             throw new OverflowException($"SdlKitConsole: Attempted to use glyph index {glyphIndex} (maximum " +
                                         $"detected index is {_fontGlyphCount}).");
         }
@@ -649,16 +649,14 @@ public class SdlKitConsole : Renderable {
         // Print the character and advance the cursor.
         SetCellAtCursor(character, foregroundColor, backgroundColor);
 
-        if(++cursorX >= ConsoleWidth) {
+        if(++_cursorPosition >= _consoleTotalGlyphs) {
             // Do we scroll or wrap?
             if(AutoScroll) {
                 Scroll();
-                SetCursorPosition(0, ++cursorY);
+                SetCursorPosition(0, ConsoleHeight - 1);
             } else {
                 _cursorPosition = 0;
             }
-        } else {
-            ++_cursorPosition;
         }
     }
 

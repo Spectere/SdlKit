@@ -145,6 +145,12 @@ public class AppWindow : Window {
             "Assets/SpectereFont-8x16.png", 8, 16);
         textConsole.ZOrder = 1000;
         textConsole.Destination = new SdlRect(200, 150, 200, 150);
+        textConsole.BlendMode = BlendMode.Alpha;
+        textConsole.DefaultGlyph = new Glyph {
+            GlyphIndex = ' ',
+            ForegroundColor = new SdlColor(192, 192, 192),
+            BackgroundColor = new SdlColor(0, 0, 0, 192)
+        };
         textConsole.CenterTextArea();
         textConsole.Clear();
         textConsole.WriteLine("Line 1...");
