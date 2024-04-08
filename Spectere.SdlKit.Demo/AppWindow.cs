@@ -117,7 +117,7 @@ public class AppWindow : Window {
 
         var testConsoleWidth = TargetPixelWidth / 2;
         var testConsoleHeight = TargetPixelHeight / 2;
-        var smileConsole = new SdlKitConsole(this, testConsoleWidth, testConsoleHeight,
+        var smileConsole = new TextConsole(this, testConsoleWidth, testConsoleHeight,
             "Assets/SpectereFont-8x16.png", 8, 16);
         smileConsole.ZOrder = 8;
         smileConsole.DefaultGlyph = new Glyph {
@@ -141,7 +141,7 @@ public class AppWindow : Window {
         }
         AddRenderable(smileConsole);
 
-        var textConsole = new SdlKitConsole(this, testConsoleWidth, testConsoleHeight,
+        var textConsole = new TextConsole(this, testConsoleWidth, testConsoleHeight,
             "Assets/SpectereFont-8x16.png", 8, 16);
         textConsole.ZOrder = 1000;
         textConsole.Destination = new SdlRect(200, 150, 200, 150);

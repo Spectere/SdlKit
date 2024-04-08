@@ -10,7 +10,7 @@ namespace Spectere.SdlKit.Renderables;
 /// Defines an SDL text console. This cannot be drawn to directly and is instead made up of a set of characters from
 /// a given character set.
 /// </summary>
-public class SdlKitConsole : Renderable {
+public class TextConsole : Renderable {
     /// <summary>
     /// The console buffer.
     /// </summary>
@@ -120,7 +120,7 @@ public class SdlKitConsole : Renderable {
     private Padding _consolePadding;
 
     /// <summary>
-    /// The default glyph for this <see cref="SdlKitConsole"/>. All glyphs in this console will be replaced with this
+    /// The default glyph for this <see cref="TextConsole"/>. All glyphs in this console will be replaced with this
     /// whenever the screen is cleared. If <see cref="PaddingColor"/> is <c>null</c>, the background color for this
     /// glyph will be used as the padding color.
     /// </summary>
@@ -161,7 +161,7 @@ public class SdlKitConsole : Renderable {
     private Padding _glyphPadding;
 
     /// <summary>
-    /// Gets or sets the color of the padding region for this <see cref="SdlKitConsole"/>. Note that this will not
+    /// Gets or sets the color of the padding region for this <see cref="TextConsole"/>. Note that this will not
     /// impact the padding between glyphs.
     /// </summary>
     public SdlColor? PaddingColor {
@@ -177,17 +177,17 @@ public class SdlKitConsole : Renderable {
     private SdlColor? _paddingColor;
     
     /// <summary>
-    /// Creates a new <see cref="SdlKitConsole"/>.
+    /// Creates a new <see cref="TextConsole"/>.
     /// </summary>
     /// <param name="renderer">The <see cref="SdlRenderer"/> that should be used to create the backing texture.</param>
-    /// <param name="width">The width of the <see cref="SdlKitConsole"/>, in pixels.</param>
-    /// <param name="height">The height of the <see cref="SdlKitConsole"/>, in pixels.</param>
+    /// <param name="width">The width of the <see cref="TextConsole"/>, in pixels.</param>
+    /// <param name="height">The height of the <see cref="TextConsole"/>, in pixels.</param>
     /// <param name="fontFilename">The name of the font that should be initially used by this console.</param>
     /// <param name="glyphWidth">The width of each glyph in the font file, in pixels.</param>
     /// <param name="glyphHeight">The height of each glyph in the font file, in pixels.</param>
     /// <param name="textureFiltering">The texture filtering method that this <see cref="RenderTarget"/> should use.</param>
     /// <exception cref="SdlTextureInitializationException">Thrown when SDL is unable to create a texture.</exception>
-    internal SdlKitConsole(SdlRenderer renderer, int width, int height, string fontFilename, int glyphWidth, int glyphHeight, TextureFiltering textureFiltering = TextureFiltering.Nearest)
+    internal TextConsole(SdlRenderer renderer, int width, int height, string fontFilename, int glyphWidth, int glyphHeight, TextureFiltering textureFiltering = TextureFiltering.Nearest)
         : base(renderer, TextureAccess.Target, width, height, textureFiltering) {
         LoadFont(fontFilename, glyphWidth, glyphHeight);
         Clear();
@@ -195,17 +195,17 @@ public class SdlKitConsole : Renderable {
     
     
     /// <summary>
-    /// Creates a new <see cref="SdlKitConsole"/>.
+    /// Creates a new <see cref="TextConsole"/>.
     /// </summary>
     /// <param name="window">The <see cref="Window"/> whose renderer should be used to create the backing texture.</param>
-    /// <param name="width">The width of the <see cref="SdlKitConsole"/>, in pixels.</param>
-    /// <param name="height">The height of the <see cref="SdlKitConsole"/>, in pixels.</param>
+    /// <param name="width">The width of the <see cref="TextConsole"/>, in pixels.</param>
+    /// <param name="height">The height of the <see cref="TextConsole"/>, in pixels.</param>
     /// <param name="fontFilename">The name of the font that should be initially used by this console.</param>
     /// <param name="glyphWidth">The width of each glyph in the font file, in pixels.</param>
     /// <param name="glyphHeight">The height of each glyph in the font file, in pixels.</param>
     /// <param name="textureFiltering">The texture filtering method that this <see cref="RenderTarget"/> should use.</param>
     /// <exception cref="SdlTextureInitializationException">Thrown when SDL is unable to create a texture.</exception>
-    public SdlKitConsole(Window window, int width, int height, string fontFilename, int glyphWidth, int glyphHeight, TextureFiltering textureFiltering = TextureFiltering.Nearest)
+    public TextConsole(Window window, int width, int height, string fontFilename, int glyphWidth, int glyphHeight, TextureFiltering textureFiltering = TextureFiltering.Nearest)
         : this(window.SdlRenderer, width, height, fontFilename, glyphWidth, glyphHeight, textureFiltering) { }
 
     /// <summary>
@@ -245,7 +245,7 @@ public class SdlKitConsole : Renderable {
     public (int x, int y) GetCursorPosition() => (_cursorPosition % ConsoleWidth, _cursorPosition / ConsoleWidth);
 
     /// <summary>
-    /// Loads a new font, replacing the existing one associated with this <see cref="SdlKitConsole"/>. It is highly
+    /// Loads a new font, replacing the existing one associated with this <see cref="TextConsole"/>. It is highly
     /// recommended that you <see cref="Clear"/> the console before changing this value, as failing to do so can cause
     /// existing text to display incorrectly.
     /// </summary>
@@ -492,7 +492,7 @@ public class SdlKitConsole : Renderable {
     }
 
     /// <summary>
-    /// Updates this <see cref="SdlKitConsole"/>.
+    /// Updates this <see cref="TextConsole"/>.
     /// </summary>
     internal override void Update() {
         var paddingColor = PaddingColor ?? DefaultGlyph.BackgroundColor;

@@ -1,7 +1,7 @@
 namespace Spectere.SdlKit.Renderables;
 
 /// <summary>
-/// Represents a single glyph in an <see cref="SdlKitConsole"/>.
+/// Represents a single glyph in an <see cref="TextConsole"/>.
 /// </summary>
 public struct Glyph {
     /// <summary>
