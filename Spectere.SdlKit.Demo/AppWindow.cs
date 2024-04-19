@@ -27,6 +27,7 @@ public class AppWindow : Window {
     private readonly Image _colorOverlayImage;
     private readonly Image _paintSurfaceImage;
     private readonly Image _fontImage;
+    private readonly TextConsole _audioConsole;
 
     private readonly List<Gamepad> _gamepads = [];
 
@@ -165,13 +166,36 @@ public class AppWindow : Window {
         textConsole.WriteLine("  Line A...");
         textConsole.Write("lmao \x01\b\x03\rlove");
         AddRenderable(textConsole);
+
+        _audioConsole = new TextConsole(this, 14 * 16 + 4, 32 + 4,
+            "Assets/SpectereFont-16x32.png", 16, 32);
+        _audioConsole.ZOrder = 2000;
+        _audioConsole.Destination = new SdlRect(TargetPixelWidth - 14 * 16 - 4, 0, 14 * 16 + 4, 32 + 4);
+        _audioConsole.BlendMode = BlendMode.Alpha;
+        _audioConsole.PaddingColor = new SdlColor(0, 128, 192, 192);
+        _audioConsole.DefaultGlyph = new Glyph
+        {
+            GlyphIndex = ' ',
+            ForegroundColor = new SdlColor(192, 192, 192),
+            BackgroundColor = new SdlColor(0, 0, 0, 192)
+        };
+        _audioConsole.CenterTextArea();
+        _audioConsole.Clear();
+        _audioConsole.AutoScroll = false;
+        _audioConsole.Write("audio:", new SdlColor(255, 255, 255));
+        AddRenderable(_audioConsole);
     }
 
     private bool _upPress;
     private bool _downPress;
     private bool _leftPress;
     private bool _rightPress;
+    private bool _hzUpPress;
+    private bool _hzDownPress;
     private void KeyDown(object? sender, KeyEventArgs e) {
+        if(e.Repeat) {
+            return;
+        }
         switch(e.KeyCode) {
             case Keycode.Escape:
                 Shutdown();
@@ -191,6 +215,18 @@ public class AppWindow : Window {
             
             case Keycode.Right:
                 _rightPress = true;
+                break;
+            
+            case Keycode.RightBracket:
+                _hzUpPress = true;
+                break;
+            
+            case Keycode.LeftBracket:
+                _hzDownPress = true;
+                break;
+            
+            case Keycode.Backslash:
+                _audioMuted = !_audioMuted;
                 break;
         }
         
@@ -213,6 +249,14 @@ public class AppWindow : Window {
             
             case Keycode.Right:
                 _rightPress = false;
+                break;
+            
+            case Keycode.RightBracket:
+                _hzUpPress = false;
+                break;
+            
+            case Keycode.LeftBracket:
+                _hzDownPress = false;
                 break;
         }
         
@@ -374,7 +418,12 @@ public class AppWindow : Window {
             _playerY = TargetPixelHeight - 50;
         }
     }
-    
+
+    private bool _audioMuted = true;
+    private int _audioHertz = 440;
+    private const int AudioHertzDelta = 4;
+    private const int AudioHertzMin = AudioHertzDelta;
+    private const int AudioHertzMax = 44100;
     private void GameUpdate(long delta) {
         //Console.WriteLine($"Game  - {_counter++}");
         ProcessEvents();
@@ -390,6 +439,20 @@ public class AppWindow : Window {
                 _playerX -= 4;
             } else if(_rightPress) {
                 _playerX += 4;
+            }
+        }
+
+        if(!_audioMuted && !(_hzUpPress && _hzDownPress)) {
+            if(_hzUpPress) {
+                _audioHertz += AudioHertzDelta;
+                if(_audioHertz > AudioHertzMax) {
+                    _audioHertz = AudioHertzMax;
+                }
+            } else if(_hzDownPress) {
+                _audioHertz -= AudioHertzDelta;
+                if(_audioHertz < AudioHertzMin) {
+                    _audioHertz = AudioHertzMin;
+                }
             }
         }
 
@@ -409,6 +472,7 @@ public class AppWindow : Window {
     private int _overlayStage;
     private const int NumPixels = PixelBlobWidth * PixelBlobHeight;
     private readonly Random _rng = new();
+
     protected override void VideoPreRender(long delta) {
         //Console.WriteLine($"Video - {_counter++}");
 
@@ -447,8 +511,19 @@ public class AppWindow : Window {
             _overlayIdx = 0;
             _overlayStage = _overlayStage == 5 ? 0 : _overlayStage + 1;
         }
-        
+
         _randomPixelsImage.Update(new SdlRect(0, 0, PixelBlobWidth, PixelBlobHeight));
         _colorOverlayImage.Update(new SdlRect(0, 0, PixelBlobWidth, PixelBlobHeight));
+
+        // Update audio control.
+        _audioConsole.SetCursorPosition(7, 0);
+
+        if(_audioMuted) {
+            _audioConsole.Write("muted  ", new SdlColor(255, 0, 0));
+        } else {
+            _audioConsole.Write("       ");
+            _audioConsole.SetCursorPosition(7, 0);
+            _audioConsole.Write($"{_audioHertz}hz", new SdlColor(0, 255, 0));
+        }
     }
 }
