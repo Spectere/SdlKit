@@ -3,7 +3,7 @@ using Spectere.SdlKit.Interop.Sdl.Support.Init;
 namespace Spectere.SdlKit.Exceptions;
 
 /// <summary>
-/// Throw when an SDL subsystem fails to initialize.
+/// Thrown when an SDL subsystem fails to initialize.
 /// </summary>
 public class SdlInitializationException : Exception {
     internal SdlInitializationException(SubsystemFlags subsystems, string message)

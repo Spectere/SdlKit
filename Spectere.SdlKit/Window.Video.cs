@@ -117,8 +117,7 @@ public partial class Window {
     private void CreateWindow() {
         // Initialize the appropriate subsystems.
         const SubsystemFlags subsystemFlags = SubsystemFlags.Events | SubsystemFlags.Video;
-        var result = Init.InitSubSystem(subsystemFlags);
-        if(result != 0) {
+        if(Init.InitSubSystem(subsystemFlags) != 0) {
             var message = Error.GetError();
             throw new SdlInitializationException(subsystemFlags, message);
         }

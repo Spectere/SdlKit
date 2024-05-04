@@ -1,9 +1,9 @@
-namespace Spectere.SdlKit.Interop.Sdl.Support.Audio; 
+namespace Spectere.SdlKit; 
 
 /// <summary>
-/// The audio playback state..
+/// The audio playback state.
 /// </summary>
-internal enum AudioState {
+public enum AudioState {
     /// <summary>Audio playback is paused.</summary>
     Unpaused = 0,
 

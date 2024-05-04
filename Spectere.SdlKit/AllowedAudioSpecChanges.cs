@@ -1,19 +1,19 @@
-namespace Spectere.SdlKit.Interop.Sdl.Support.Audio; 
+namespace Spectere.SdlKit; 
 
 /// <summary>
-/// Specifies how SDL should behave when a device cannot offer a specific feature. If
-/// the application requests a feature that the hardware doesn't offer, SDL will always
-/// try to get the closest equivalent.
+/// Specifies what should happen if SDL is unable to open an audio device with the requested specifications.
+/// If any changes are allowed, you must be sure to check the CurrentAudioSpec property before writing any audio
+/// to the buffer to ensure that the application is sending audio to SdlKit in the correct format.
 /// </summary>
 [Flags]
-internal enum AllowedChanges {
+public enum AllowedAudioSpecChanges {
     /// <summary>Do not allow any audio spec changes.</summary>
     DisallowChange = 0x00,
 
     /// <summary>Allow frequency changes.</summary>
     AllowFrequencyChange = 0x01,
 
-    /// <summary>Allow the audio format to change.</summary>
+    /// <summary>Allow the audio format (bit size, data type, etc.) to change.</summary>
     AllowFormatChange = 0x02,
 
     /// <summary>Allow the number of channels to change.</summary>

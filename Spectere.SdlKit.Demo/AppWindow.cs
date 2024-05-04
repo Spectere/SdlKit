@@ -5,6 +5,7 @@ using Spectere.SdlKit.EventArgs.Window;
 using Spectere.SdlKit.Renderables;
 using Spectere.SdlKit.SdlEvents.GameController;
 using Spectere.SdlKit.SdlEvents.Keyboard;
+using System.Text;
 
 namespace Spectere.SdlKit.Demo;
 
@@ -30,6 +31,8 @@ public class AppWindow : Window {
     private readonly TextConsole _audioConsole;
 
     private readonly List<Gamepad> _gamepads = [];
+
+    private readonly Audio _audio;
 
     // The window's constructor can perform any initialization tasks that it needs to perform, but it must also
     // call the base constructor to set up the SDL window and renderer.
@@ -184,8 +187,42 @@ public class AppWindow : Window {
         _audioConsole.AutoScroll = false;
         _audioConsole.Write("audio:", new SdlColor(255, 255, 255));
         AddRenderable(_audioConsole);
-    }
+        
+        // Initialize audio.
+        _audio = new Audio();
+        _audio.AudioRequested += AudioRequested;
+        
+        var requestedSpec = new AudioSpec(
+            frequency: 96000,
+            bitSize: 16,
+            isFloat: false,
+            isSigned: true,
+            channels: 2,
+            samples: 1024
+        );
+        _audio.Open(requestedSpec);
+        _sampleRate = _audio.CurrentAudioSpec?.Frequency ?? 44100;
 
+        var spec = _audio.CurrentAudioSpec;
+        if(_audio.Opened && spec is not null) {
+            var sb = new StringBuilder();
+            sb.Append("Audio opened: ");
+            sb.Append($"{spec.Frequency} hz, ");
+            sb.Append($"{spec.BitSize}-bit, ");
+            sb.Append(spec.IsFloat
+                ? "floating-point"
+                : spec.IsSigned ? "signed integer" : "unsigned integer"
+            );
+            sb.Append($" (buffer size: {spec.Samples} samples)");
+            
+            Console.WriteLine(sb.ToString());
+        } else if (_audio.Opened && spec is null) {
+            Console.WriteLine("Audio is open but the spec is null? wtf?");
+        } else {
+            Console.WriteLine("Audio is sad :(");
+        }
+    }
+    
     private bool _upPress;
     private bool _downPress;
     private bool _leftPress;
@@ -227,6 +264,7 @@ public class AppWindow : Window {
             
             case Keycode.Backslash:
                 _audioMuted = !_audioMuted;
+                _audio.SetPlaybackState(_audioMuted ? AudioState.Paused : AudioState.Unpaused);
                 break;
         }
         
@@ -421,6 +459,15 @@ public class AppWindow : Window {
 
     private bool _audioMuted = true;
     private int _audioHertz = 440;
+    private readonly int _sampleRate;
+    private int _period;
+    private void AudioRequested(object sender, int samplesRequested, in float[] buffer) {
+        for(var i = 0; i < buffer.Length; i++) {
+            buffer[i] = (float)Math.Sin(Math.PI * _audioHertz * _period / _sampleRate);
+            _period++;
+        }
+    }
+
     private const int AudioHertzDelta = 4;
     private const int AudioHertzMin = AudioHertzDelta;
     private const int AudioHertzMax = 44100;

@@ -3,7 +3,7 @@ namespace Spectere.SdlKit.Interop.Sdl.Support.Audio;
 /// <summary>
 /// A list of audio formats supported by SDL.
 /// </summary>
-internal enum AudioFormat : ushort {
+internal enum SdlAudioFormat : ushort {
     /// <summary>Unsigned byte. Equivalent to AUDIO_U8.</summary>
     UnsignedByte = 0x0008,
 
