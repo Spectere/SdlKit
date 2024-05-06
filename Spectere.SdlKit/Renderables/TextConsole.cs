@@ -10,7 +10,7 @@ namespace Spectere.SdlKit.Renderables;
 /// Defines an SDL text console. This cannot be drawn to directly and is instead made up of a set of characters from
 /// a given character set.
 /// </summary>
-public class TextConsole : Renderable {
+public partial class TextConsole : Renderable {
     /// <summary>
     /// The console buffer.
     /// </summary>

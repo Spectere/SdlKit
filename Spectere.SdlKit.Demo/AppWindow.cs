@@ -3,6 +3,7 @@ using Spectere.SdlKit.EventArgs.Keyboard;
 using Spectere.SdlKit.EventArgs.Mouse;
 using Spectere.SdlKit.EventArgs.Window;
 using Spectere.SdlKit.Renderables;
+using Glyph = Spectere.SdlKit.Renderables.TextConsole.Glyph;
 using Spectere.SdlKit.SdlEvents.GameController;
 using Spectere.SdlKit.SdlEvents.Keyboard;
 using System.Text;

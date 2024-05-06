@@ -22,6 +22,9 @@
       <Compile Update="Renderables\Image.Static.cs">
         <DependentUpon>Image.cs</DependentUpon>
       </Compile>
+      <Compile Update="Renderables\TextConsole.Glyph.cs">
+        <DependentUpon>TextConsole.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>
