@@ -10,7 +10,7 @@ public interface IRenderable : IComparable<IRenderable> {
     /// Gets or sets the alpha modulation value that will be multiplied into all rendering operations. This will cause
     /// the texture to appear translucent when rendered, with higher values appearing more opaque.
     /// </summary>
-    /// /// <seealso cref="ColorModulation"/>
+    /// <seealso cref="ColorModulation"/>
     public byte AlphaModulation { get; set; }
     
     /// <summary>
