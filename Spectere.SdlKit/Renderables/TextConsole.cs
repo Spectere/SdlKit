@@ -185,7 +185,7 @@ public partial class TextConsole : Renderable {
     /// <param name="fontFilename">The name of the font that should be initially used by this console.</param>
     /// <param name="glyphWidth">The width of each glyph in the font file, in pixels.</param>
     /// <param name="glyphHeight">The height of each glyph in the font file, in pixels.</param>
-    /// <param name="textureFiltering">The texture filtering method that this <see cref="RenderTarget"/> should use.</param>
+    /// <param name="textureFiltering">The texture filtering method that this <see cref="TextConsole"/> should use.</param>
     /// <exception cref="SdlTextureInitializationException">Thrown when SDL is unable to create a texture.</exception>
     internal TextConsole(SdlRenderer renderer, int width, int height, string fontFilename, int glyphWidth, int glyphHeight, TextureFiltering textureFiltering = TextureFiltering.Nearest)
         : base(renderer, TextureAccess.Target, width, height, textureFiltering) {
@@ -203,7 +203,7 @@ public partial class TextConsole : Renderable {
     /// <param name="fontFilename">The name of the font that should be initially used by this console.</param>
     /// <param name="glyphWidth">The width of each glyph in the font file, in pixels.</param>
     /// <param name="glyphHeight">The height of each glyph in the font file, in pixels.</param>
-    /// <param name="textureFiltering">The texture filtering method that this <see cref="RenderTarget"/> should use.</param>
+    /// <param name="textureFiltering">The texture filtering method that this <see cref="TextConsole"/> should use.</param>
     /// <exception cref="SdlTextureInitializationException">Thrown when SDL is unable to create a texture.</exception>
     public TextConsole(Window window, int width, int height, string fontFilename, int glyphWidth, int glyphHeight, TextureFiltering textureFiltering = TextureFiltering.Nearest)
         : this(window.SdlRenderer, width, height, fontFilename, glyphWidth, glyphHeight, textureFiltering) { }
