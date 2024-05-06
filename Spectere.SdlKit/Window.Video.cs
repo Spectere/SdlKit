@@ -109,7 +109,7 @@ public partial class Window {
         Render.RenderPresent(SdlRenderer);
     }
     
-        /// <summary>
+    /// <summary>
     /// Creates a window and its rendering target.
     /// </summary>
     /// <exception cref="SdlRendererInitializationException">Thrown when the SDL renderer fails to initialize.</exception>
@@ -158,13 +158,6 @@ public partial class Window {
     /// </summary>
     /// <param name="renderable">The <see cref="Renderable"/> to add to the list.</param>
     public void DeleteRenderable(Renderable renderable) => _renderTarget?.DeleteRenderable(renderable);
-    
-    /// <summary>
-    /// Destroys the window and its renderer. Please note that this will only dispose of these two objects. You
-    /// should dispose of any additional resources that you have allocated before calling this, including any
-    /// <see cref="IRenderable"/> instances.
-    /// </summary>
-
     
     /// <summary>
     /// Registers the video update timer. If it has already been registered, this will remove the existing registration

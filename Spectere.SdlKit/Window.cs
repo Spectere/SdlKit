@@ -96,8 +96,14 @@ public partial class Window : Timer {
     public string GetLastSdlError() => Error.GetError();
 
     /// <summary>
+    /// <para>
     /// This should be called when the application is exiting. This will fully shut down SDL and any of its supporting
     /// libraries.
+    /// </para>
+    /// <para>
+    /// It is good practice to dispose of any additional resources that you have allocated (such as
+    /// <see cref="IRenderable"/> instances) prior to calling this method.
+    /// </para>
     /// </summary>
     public void Quit() {
         if(Image.SdlImageInitialized) {
