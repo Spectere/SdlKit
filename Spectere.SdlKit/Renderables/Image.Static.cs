@@ -77,6 +77,8 @@ public partial class Image {
     /// <param name="textureFiltering">The texture filtering method that this <see cref="Image"/> should use. This
     /// defaults to <see cref="TextureFiltering.Nearest"/>.</param>
     /// <returns>A new <see cref="Image"/>, created from the specified file.</returns>
+    /// <exception cref="FileNotFoundException">Thrown when the file passed in via <paramref name="path"/> does not
+    /// exist.</exception>
     public static Image FromFile(Window window, string path, TextureFiltering textureFiltering = TextureFiltering.Nearest)
         => FromFile(window.SdlRenderer, path, textureFiltering);
 }
