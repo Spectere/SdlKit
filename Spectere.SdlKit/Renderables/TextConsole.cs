@@ -1,4 +1,3 @@
-using SdlImage = Spectere.SdlKit.Interop.SdlImage.Image;
 using Spectere.SdlKit.Exceptions;
 using Spectere.SdlKit.Interop.Sdl;
 using Spectere.SdlKit.Interop.Sdl.Support.Render;
@@ -255,53 +254,14 @@ public partial class TextConsole : Renderable {
     /// <exception cref="FileNotFoundException">Thrown when the file passed in via <paramref name="fontFilename"/> does
     /// not exist.</exception>
     public void LoadFont(string fontFilename, int glyphWidth, int glyphHeight) {
-        if(!File.Exists(fontFilename)) {
-            throw new FileNotFoundException($"Font could not be found on disk: {fontFilename}");
-        }
-        
-        if(!_fontTexture.IsNull) {
-            // Destroy the existing texture.
-            Render.DestroyTexture(_fontTexture);
-        }
-        
-        // Set the scale quality hint appropriately.
-        SdlHintHelper.SetTextureFilteringMode(TextureFiltering);
-        
-        // Load the font as a surface.
-        var loadedSurface = SdlImage.Load(fontFilename);
-        if(loadedSurface.IsNull) {
-            var sdlError = Error.GetError();
-            throw new SdlImageLoadException(sdlError);
-        }
-        
-        // Convert the surface to RGBA32.
-        var rgba32Surface = Surface.ConvertSurfaceFormat(loadedSurface, GetRgba32TextureFormat());
-        if(rgba32Surface.IsNull) {
-            var sdlError = Error.GetError();
-            throw new SdlFormatConversionException(sdlError);
-        }
-
-        // Free the original surface.
-        Surface.FreeSurface(loadedSurface);
-
-        // Create the hardware accelerated texture.
-        SdlHintHelper.SetTextureFilteringMode(TextureFiltering);
-        _fontTexture = Render.CreateTextureFromSurface(SdlRenderer, rgba32Surface);
-        if(_fontTexture.IsNull) {
-            var sdlError = Error.GetError();
-            throw new SdlTextureInitializationException(sdlError);
-        }
-
-        // Free the RGBA32 surface.
-        Surface.FreeSurface(rgba32Surface);
+        var textureInfo = TextureHelper.LoadTextureFromFile(ref SdlRenderer, ref _fontTexture, fontFilename, TextureFiltering);
 
         // Calculate the glyphs per row, total number of glyphs, etc.
         _fontGlyphWidth = glyphWidth;
         _fontGlyphHeight = glyphHeight;
 
-        _ = Render.QueryTexture(_fontTexture, out _, out _, out var textureWidth, out var textureHeight);
-        _fontGlyphsPerRow = textureWidth / _fontGlyphWidth;
-        _fontGlyphCount = textureHeight / _fontGlyphHeight * _fontGlyphsPerRow;
+        _fontGlyphsPerRow = textureInfo.TextureWidth / _fontGlyphWidth;
+        _fontGlyphCount = textureInfo.TextureHeight / _fontGlyphHeight * _fontGlyphsPerRow;
         
         // Recalculate all computed values.
         RecalculateSizesAndBounds();

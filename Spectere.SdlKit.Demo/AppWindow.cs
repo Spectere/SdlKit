@@ -30,6 +30,7 @@ public class AppWindow : Window {
     private readonly Image _paintSurfaceImage;
     private readonly Image _fontImage;
     private readonly TextConsole _audioConsole;
+    private readonly TileGrid _tileGrid;
 
     private readonly List<Gamepad> _gamepads = [];
 
@@ -188,20 +189,28 @@ public class AppWindow : Window {
         _audioConsole.AutoScroll = false;
         _audioConsole.Write("audio:", new SdlColor(255, 255, 255));
         AddRenderable(_audioConsole);
+
+        _tileGrid = new TileGrid(this, 6, 3, "Assets/TileGridDemo-16x16.png", 16, 16);
+        _tileGrid.ZOrder = 9;
+        _tileGrid.Destination = new SdlRect(0, TargetPixelHeight / 2 - _tileGrid.Height, _tileGrid.Width, _tileGrid.Height);
+        _tileGrid.BackgroundColor = new SdlColor(SkyR, SkyG, SkyB);
+        _tileGrid.SetTiles(0, [
+            -1, -1, -1,  3,  4, -1,
+            -1, -1,  3,  1,  2,  0,
+             0,  0,  1,  5,  5,  5
+        ]);
+        _tileGrid.AddLayer([
+            -1, -1, -1, -1, -1, -1,
+            -1, -1, -1, -1, -1,  6,
+            -1,  7, -1, -1, -1, -1
+        ]);
+        AddRenderable(_tileGrid);
         
         // Initialize audio.
         _audio = new Audio();
         _audio.AudioRequested += AudioRequested;
         
-        var requestedSpec = new AudioSpec(
-            frequency: 96000,
-            bitSize: 16,
-            isFloat: false,
-            isSigned: true,
-            channels: 2,
-            samples: 1024
-        );
-        _audio.Open(requestedSpec);
+        _audio.Open();
         _sampleRate = _audio.CurrentAudioSpec?.Frequency ?? 44100;
 
         var spec = _audio.CurrentAudioSpec;
@@ -264,6 +273,9 @@ public class AppWindow : Window {
                 break;
             
             case Keycode.Backslash:
+                if(!_audio.Opened) {
+                    return;
+                }
                 _audioMuted = !_audioMuted;
                 _audio.SetPlaybackState(_audioMuted ? AudioState.Paused : AudioState.Unpaused);
                 break;
@@ -472,6 +484,14 @@ public class AppWindow : Window {
     private const int AudioHertzDelta = 4;
     private const int AudioHertzMin = AudioHertzDelta;
     private const int AudioHertzMax = 44100;
+    private const byte SkyR = 85;
+    private const byte SkyG = 170;
+    private const byte SkyB = 255;
+    private byte _skyAdjust = 64;
+    private bool _skyAdjustUp;
+    private SdlColor _skyColor = new(SkyR, SkyG, SkyB);
+    private bool _grassGUp;
+    private SdlColor _grassColor = new(128, 255, 128);
     private void GameUpdate(long delta) {
         //Console.WriteLine($"Game  - {_counter++}");
         ProcessEvents();
@@ -507,6 +527,22 @@ public class AppWindow : Window {
         ClampPlayerSpriteLocation();
         _fontImage.Destination = new SdlRect(_playerX, _playerY, 40, 50);
         UpdateTitle();
+        
+        // Mess with the tile grid. :D
+        if((_skyAdjust <= 0 && !_skyAdjustUp) || (_skyAdjust >= 64 && _skyAdjustUp)) {
+            _skyAdjustUp = !_skyAdjustUp;
+        }
+        _skyAdjust += (byte)(_skyAdjustUp ? 2 : -2);
+        _skyColor.R = (byte)(SkyR - _skyAdjust);
+        _skyColor.G = (byte)(SkyG - _skyAdjust);
+        _skyColor.B = (byte)(SkyB - _skyAdjust);
+        _tileGrid.BackgroundColor = _skyColor;
+
+        if((_grassColor.G <= 128 && !_grassGUp) || (_grassColor.G >= 255 && _grassGUp)) {
+            _grassGUp = !_grassGUp;
+        }
+        _grassColor.G += (byte)(_grassGUp ? 4 : -4);
+        _tileGrid.SetLayerColorModulation(0, _grassColor);
         
         // Let's get ready to rumble!!
         if(_lowFreqRumble == 0 && _highFreqRumble == 0) return;

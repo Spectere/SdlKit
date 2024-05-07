@@ -25,6 +25,9 @@
       <Compile Update="Renderables\TextConsole.Glyph.cs">
         <DependentUpon>TextConsole.cs</DependentUpon>
       </Compile>
+      <Compile Update="Renderables\TileGrid.Layer.cs">
+        <DependentUpon>TileGrid.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>
