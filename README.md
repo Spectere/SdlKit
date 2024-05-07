@@ -47,7 +47,7 @@ any fancy pixels or play beeps and/or boops.
 
 ### "Renderables"
 
-Higher level surfaces that might be handy.
+Higher level surfaces that might come in handy.
 
 * TextConsole: a console that allows you to load a file and easily `Write` text to (or plot characters onto it)
 * TileGrid: a multi-layer graphical surface that lets you scatter tiles from a tile sheet around
